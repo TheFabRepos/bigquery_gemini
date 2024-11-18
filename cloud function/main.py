@@ -99,4 +99,5 @@ def run_it(request) -> str | tuple[str, int]:
         A JSON string containing the generated text replies or an error message with a 400 status code.
     """
     print(f"From run_it -> request: {request.get_json()["calls"]}")
-    return eventLoop.run_until_complete(wrapper(request))
+    return eventLoop.run_until_complete(wrapper(request)) # inspired from https://stackoverflow.com/questions/52755996/can-or-how-to-use-python-asyncio-on-google-cloud-functions
+
