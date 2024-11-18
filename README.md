@@ -1,1 +1,1 @@
-# bigquery_gemini
+# BigQuery and GenAI for Data engineering 
