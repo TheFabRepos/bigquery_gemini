@@ -1,4 +1,27 @@
--- Creates a remote function: This code defines a new function called <FunctionName> within the <ProjectID>.<DatasetName> dataset. The REMOTE keyword indicates that this function executes code outside of BigQuery.
+-- Create a connection object to use in the BigQuery external table creation - Follow this article: 
+-- https://cloud.google.com/bigquery/docs/create-cloud-resource-connection#create-cloud-resource-connection
+
+-- Creates an external table (Biglake table) ): This code creates a BigLake external table named <TableName> in the <ProjectID>.<DatasetName>. External tables allow BigQuery to query data stored outside of BigQuery storage.
+-- Connects to external storage: The WITH CONNECTION clause specifies a connection named <ProjectID>.<Location>.<ConnectionObjName>, which likely contains the necessary credentials and configuration to access the external data source (probably Cloud Storage in this case).
+-- Defines data location and type: The OPTIONS clause provides details about the external data:
+-- object_metadata="DIRECTORY" indicates that the data is organized in directories.
+-- uris = ['gs://<BucketName>/*'] specifies the location of the data in a Cloud Storage bucket includes all files within that bucket using the wildcard *.
+-- metadata_cache_mode="MANUAL" sets the metadata caching to manual, meaning BigQuery won't automatically refresh the metadata (information about the data).
+CREATE OR REPLACE EXTERNAL TABLE 
+  `<ProjectID>.<DatasetName>.<TableName>` 
+WITH CONNECTION `<ProjectID>.<Location>.<ConnectionObjName>` OPTIONS ( 
+    object_metadata="DIRECTORY", 
+    uris = ['gs://<BucketName>/*' ], 
+    metadata_cache_mode="MANUAL");
+
+-- Refresh metadata manually (better for demo else AUTO is minimum 30 minutes)
+CALL BQ.REFRESH_EXTERNAL_METADATA_CACHE("<ProjectID>.<DatasetName>.<TableName>");
+
+
+-- Create a connection object to use in the BigQuery remote function creation - Follow this article: 
+-- https://cloud.google.com/bigquery/docs/remote-functions#create_a_connection
+
+-- Creates a remote function: This code defines a new function called <FunctionName> within the <ProjectID>.<DatasetName> dataset. The REMOTE keyword indicates that this function executes code outside of BigQuery. FYI article here: https://cloud.google.com/bigquery/docs/remote-functions
 -- Specifies connection: WITH CONNECTION clause specifies that the function uses a pre-defined connection named <ProjectID>.<Location>.<ConnectionObj> (eg.: project-362608.us.simple_remote_function). This connection likely holds the necessary details to connect to the external service.
 -- Sets the endpoint: The OPTIONS (endpoint = ...) clause defines the URL of the external service where the function's code is actually executed. In this case, it's a Cloud Function at the provided URL.
 -- Handles inputs and outputs: The function takes two arguments (http_uri and prompt both as STRING) and is expected to return a string value.
