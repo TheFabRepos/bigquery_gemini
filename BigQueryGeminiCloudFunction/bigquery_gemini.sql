@@ -37,6 +37,7 @@ OPTIONS (endpoint = 'https://<CloudFunction_Endpoint>');
 -- Retrieves signed URLs: The SELECT uri, signed_url statement within the CTE selects the original URI and the generated signed URL from the BigLake table. This makes the data accessible to the remote function.
 -- Calls the remote function: The main SELECT statement calls the remote function (defined above), passing the signed_url (from the CTE) and the specific prompt as arguments (example of prompt: "Describe the product in exactly 5 bullet points starting with -. Do not add any text other than the 5 bullet points description." The function is used to process or analyze the data accessible via the signed URL.
 -- Constructs the output: The SELECT statement retrieves the signed_url as uri and the result of the remote function call as description, effectively combining the original URI with the generated description from the external service. This output likely provides enriched information about the data in the BigLake table.
+-- Flow, aka number of inference executed by Gemini in parallel will be controlled from here (for instance with a limit 100, or by date...
 with accessible_url as
 (
 SELECT uri, signed_url, 
